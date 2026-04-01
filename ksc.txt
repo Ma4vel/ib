@@ -1,0 +1,108 @@
+ksc на Astra Linux SE 1.8
+
+# cat /etc/astra/build_version
+# uname -a
+# hostname -f
+# sudo hostnamectl set-hostname <НОВОЕ ИМЯ>
+# cat /etc/hosts
+==========================================================================================================================================================
+УСТАНОВКА POSTGRESQL
+==========================================================================================================================================================
+# ip a
+# sudo nano /etc/apt/sources.list     (раскомментировать только ветку main)
+# sudo apt update
+
+# apt policy postgresql-15
+# sudo apt install postgresql
+# sudo systemctl status postgresql
+
+Поправить конфигурационный файл postgresql.conf:
+# sudo nano /etc/postgresql/15/main/postgresql.conf
+  shared_buffers = 2000MB    (25% ОЗУ)
+  max_stack_depth = 7MB    (#ulimit -s, -1MB)
+  temp_buffers = 24MB
+  work_mem = 16MB
+  max_connection = 151
+  max_parallel_workes_per_gather = 0
+  maintenace_work_mem = 128MB
+
+Поправить конфигурационный файл pg_hba.conf:
+  # sudo nano /etc/postgresql/15/main/pg_hba.conf
+  Заменить "peer" на "trust" в двух местах (записи local, database)
+
+# sudo systemctl restart postgresql.service
+# sudo systemctl status postgresql.service
+
+Запускаем работу с СУБД:
+  # psql -U postgres
+  ALTER USER "postgres" WITH PASSWORD 'пароль';
+  # exit
+
+!!! Работаем под root
+# adduser ksc
+# groupadd kladmins
+# gpasswd -a ksc kladmins
+# usermod -g kladmins ksc (можно проверить # groups ksc)
+
+Далее поправить 2 строчки:
+# sudo echo 'ksc soft nofile 32768' >> /etc/security/limits.conf
+# sudo echo 'ksc hard nofile 131072' >> /etc/security/limits.conf
+Проверить, что добавились в конец эти строчки:
+# cat /etc/security/limits.conf
+
+==========================================================================================================================================================
+УСТАНОВКА KSC
+==========================================================================================================================================================
+! Перейти в директорию с дистрибутивами
+# sudo apt install ./ksc64... .deb
+Далее запустить скрипт run /opt/... из-под sudo
+
+
+    у   y  1  <Адрес сервера>  enter  1
+
+    kladmins  ksc  ksc
+
+    2  127.0.0.1  5432
+
+    kav  postgres  <Пароль>
+
+
+Enter the user name:
+    admin-ksc
+    P@$$w0rd
+
+
+Далее ставим веб-консоль:
+sudo nano /etc/ksc-web-console-setup.json
+Добавляем туда:
+{
+    "address": "127.0.0.1",
+    "port": 8080,
+    "trusted": "127.0.0.1|13299|/var/opt/kaspersky/klnagent_srv/1093/cert/klserver.cer|KSC Server",
+    "acceptEula": true
+}
+
+# sudo apt install ./ksc-web-console...
+
+
+!!! Вручную поставить агента:
+# sudo dpkg -i ./klnagent64...
+Запустить через sudo скрипт run /opt/...
+y, y, <адрес сервера>, enter, enter, 1
+Агент установлен!
+
+Посмотреть статус служб:
+# systemctl status kl*
+
+Рестартануть все службы:
+# systemctl restart KSC
+
+
+
+? Ставим агента ./klnagent64... .deb
+? Ставим kesl
+
+
+
+
+
