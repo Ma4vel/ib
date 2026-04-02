@@ -1,0 +1,11 @@
+systemctl stop iwtm-consul
+
+rm -rf /opt/iw/tm5/var/consul
+
+systemctl start iwtm-consul
+
+iwtm start
+
+nano settings.cfg
+
+./iwtm-installer-7.14.0.178-redos-7.3 --optionfile settings.cfg --mode unattended
