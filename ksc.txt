@@ -1,3 +1,19 @@
+На KSC astra:
+
+# id
+# groups localadmin
+
+"Подготовка устройства с ОС Linux и удаленрая установка Агента администрирования... "
+
+Открыть статью касперского 
+#sudo visudo или # sudo nano /etc/sudoers.tmp
+   %astra-admin.  ALL=(ALL:ALL) NIPASSWD: ALL
+
+Открыть файл sudo nano /etc/systemd/logind.conf, поставить "no"
+
+Добавить строку PATH... в файл nano /home/localadmin/.bashrc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ksc на Astra Linux SE 1.8
 
 # cat /etc/astra/build_version
